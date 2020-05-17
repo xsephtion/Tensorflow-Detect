@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+  <body>
+    <img id="output" width="400" height="400"/><br>
+    <input id="img_in" type="file" accept="image/*" onchange="loadFile(event)"><br>
+    <div id="div">
+      <p id="p1">Prediction:</p>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
+  <script>
+    var loadFile = function(event) {
+      var output = document.getElementById('output');
+      output.src = URL.createObjectURL(event.target.files[0]);
+      output.onload = function() {
+        URL.revokeObjectURL(output.src)
+      }
+      //document.getElementById("img_in").style.display = "none"
+      tfjs();
+    };
+  </script>
+  <script>
+    tfjs = function(){
+      const img = document.getElementById('output');
+      cocoSsd.load().then(model => {
+        model.detect(img).then(predictions => {
+          console.log('Predictions: ', predictions);
+          var p = document.createElement("p")
+          var node = document.createTextNode("Class: " + predictions[0].class)
+          var node1 = document.createTextNode("\nConfidence: " + String(predictions[0].score * 100))
+          p.appendChild(node)
+          p.appendChild(document.createElement("br"))
+          p.appendChild(node1)
+          var element = document.getElementById("div");
+          element.appendChild(p);
+        });
+      });
+    }
+  </script>
+</html>
