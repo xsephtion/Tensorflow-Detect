@@ -1,3 +1,7 @@
+
+// UNSUPPORTED. 
+// Bugged changed to HTML version
+
 const tf = require('@tensorflow/tfjs')
 const tfjs = require('@tensorflow/tfjs-node')
 const cocoSsd = require('@tensorflow-models/coco-ssd');
@@ -19,11 +23,10 @@ app.get('/', function(req, res){
 
 app.post('/send', upload.single('image'), async function(req, res){
     var img = req.file
-    var imgs_html = '<img id="img" src='+img.path+'></img>'
     try{
         const model = await cocoSsd.load();
         // Classify the image.
-        const predictions = await model.detect(imgs_html);
+        const predictions = await model.detect(imgs_html); // bugged
         console.log('Predictions: ');
         console.log(predictions);
         res.status(200).send(predictions)
